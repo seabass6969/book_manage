@@ -10,11 +10,12 @@ os.system("mkdir -p ~/.cache/book-manage-real")
 username = os.getlogin()
 try:
     conn = sqlite3.connect("/home/"+username+'/.config/book-manage-real/maindb.db')
+    cur = conn.cursor()
 except:
     print("seems like you launch this program for the first time!")
     print("Creating a empty database")
     os.system("mkdir -p ~/.config/book-manage-real/")
-    os.system("echo \"not yet ready yet\"")
+    os.system("wget https://github.com/seabass6969/book_manage/raw/master/maindb.db -O ~/.config/book-manage-real/maindb.db")
     print("please reopen the program in order to active!")
     sys.exit()
 print("/---------------------------------\\")
@@ -62,6 +63,10 @@ def addingtosystem():
         print("Added the record!")
         conn.commit()
 
+def PreviewItem():
+    print("Preview Item")
+    for row in cur.execute("SELECT * FROM BookInfomation ORDER BY KEY"):
+        print(row)
 while True:
     try:
         print("\nPlease type an appropate character to get started!\n")
@@ -73,11 +78,14 @@ while True:
             conn.close()
             print("Bye Bye")
             sys.exit()
+        elif getstarted_Character == "P" or getstarted_Character=="p":
+            PreviewItem()
         elif getstarted_Character == "r" or getstarted_Character=="R":
             print("Remove Item")
         else:
             print("Please try again")
     except KeyboardInterrupt:
+        conn.close()
         print("\n\nBye bye have a nice day!👋")
         sys.exit()
     finally:
