@@ -49,12 +49,13 @@ def addingtosystem():
         try:
             real_ISBNinput = resreal[int(chooseing_value)]
         except:
-            real_ISBNinput = "invalid ISBN" + str(random.randint(1,1000000))
+            real_ISBNinput = "?r " + str(random.randint(1,1000000))
 
     book_name = input("Input the book name: ")
     Author = input("Input the author: ")
 
     connection_string = "INSERT INTO \"main\".\"BookInfomation\"(\"ISBN\",\"Book name\",\"Author\") VALUES (\'"+real_ISBNinput+"\',\'"+book_name+"\',\'"+Author+"\');"
+    conn.commit()
     try:
         conn.execute(connection_string)
     except:
@@ -65,8 +66,27 @@ def addingtosystem():
 
 def PreviewItem():
     print("Preview Item")
+    print("ISBN","book Name", "Author", sep="   |   ")
     for row in cur.execute("SELECT * FROM BookInfomation ORDER BY KEY"):
-        print(row)
+        print(row[0], end="  ")
+        print(row[1], end="  ")
+        print(row[3], end="  ")
+    print("\nfinish printing \n \n")
+def RemoveItem():
+    print("Remove Item")
+    print("id",end="|")
+    print("ISBN","book Name", "Author", sep="   |   ")
+    for row in cur.execute("SELECT * FROM BookInfomation ORDER BY KEY"):
+        print(row[2], end="  ")
+        print(row[0], end="  ")
+        print(row[1], end="  ")
+        print(row[3], end="  ")
+    try:
+        removeItemID = int(input("\nType the ID of the book you wanna delete: "))
+        cur.execute("DELETE FROM BookInfomation WHERE KEY="+str(removeItemID))
+        conn.commit()
+    except ValueError:
+        print("Try again!")
 while True:
     try:
         print("\nPlease type an appropate character to get started!\n")
@@ -81,7 +101,7 @@ while True:
         elif getstarted_Character == "P" or getstarted_Character=="p":
             PreviewItem()
         elif getstarted_Character == "r" or getstarted_Character=="R":
-            print("Remove Item")
+            RemoveItem()
         else:
             print("Please try again")
     except KeyboardInterrupt:
